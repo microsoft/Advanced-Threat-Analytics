@@ -1,4 +1,5 @@
-﻿#ATA PowerShell Module
+# Implement your module commands in this script.
+#ATA PowerShell Module
 #Required Version ATA 1.8+
 #Author: Mike Kassis
 #Disclaimer: This is an open source community project and is not part of the ATA product.
@@ -29,7 +30,7 @@ return true;
 "@
     }
     catch {
-        Write-Error $_ 
+        Write-Error $_
     }
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 }
@@ -72,7 +73,7 @@ Resolve-ATASelfSignedCert
     Type                        : DnsReconnaissanceSuspiciousActivity
 
     The above command retrieves a listing of all Suspicious Activities.
-    
+
 .EXAMPLE
     Get-ATASuspiciousActivity -Id 58f54ce12aaea50ff89b38a7 -Details
 
@@ -157,9 +158,9 @@ function Get-ATASuspiciousActivity {
 .EXAMPLE
     Set-ATASuspiciousActivity -Id 58f54ce12aaea50ff89b38a7 -Status Closed; Get-ATASuspiciousActivity | select Id, Status | ft
 
-    Id                             Status                                                                              
-    --                             ------                                                                              
-    58f54ce12aaea50ff89b38a7       Closed 
+    Id                             Status
+    --                             ------
+    58f54ce12aaea50ff89b38a7       Closed
 
     The above command sets the specified Suspicious Activity to a Closed state, then displays the current status for the SA.
 #>
@@ -201,7 +202,7 @@ function Set-ATASuspiciousActivity {
         }
 
         if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -eq 'Delete') {
-            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) { 
+            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
                 $ShouldDelete = '?shouldDeleteSameType=false'
                 $body = @{}
                 $body += @{shouldDeleteSametype = $false}
@@ -230,122 +231,122 @@ function Set-ATASuspiciousActivity {
 .EXAMPLE
     Get-ATAStatus -Center | Select -ExpandProperty Configuration
 
-    AbnormalBehaviorDetectorConfiguration                                          : @{BuildModelsConfiguration=; CreateSuspiciousActivitiesConfiguration=; 
-                                                                                     MinActiveAccountCount=50; SuspiciousActivityCreationDataMaxCount=1000; 
+    AbnormalBehaviorDetectorConfiguration                                          : @{BuildModelsConfiguration=; CreateSuspiciousActivitiesConfiguration=;
+                                                                                     MinActiveAccountCount=50; SuspiciousActivityCreationDataMaxCount=1000;
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    AbnormalKerberosDetectorConfiguration                                          : @{ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    AbnormalKerberosDetectorConfiguration                                          : @{ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    AbnormalSensitiveGroupMembershipChangeDetectorConfiguration                    : @{LearningPeriod=70.00:00:00; ExcludedSourceAccountIds=System.Object[]; 
+    AbnormalSensitiveGroupMembershipChangeDetectorConfiguration                    : @{LearningPeriod=70.00:00:00; ExcludedSourceAccountIds=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    AbnormalSmbDetectorConfiguration                                               : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=; 
-                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    AbnormalSmbDetectorConfiguration                                               : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=;
+                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    AbnormalVpnDetectorConfiguration                                               : @{ProfileCommonGeolocationsAndCarriesAsyncConfiguration=; BlockConfiguration=; 
+    AbnormalVpnDetectorConfiguration                                               : @{ProfileCommonGeolocationsAndCarriesAsyncConfiguration=; BlockConfiguration=;
                                                                                      IsEnabled=True; UpsertProfileConfiguration=}
-    AccountEnumerationDetectorConfiguration                                        : @{ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    AccountEnumerationDetectorConfiguration                                        : @{ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    ActivityProcessorConfiguration                                                 : @{ActivityBlockConfiguration=; ActivityPostponeBlockConfiguration=; 
+    ActivityProcessorConfiguration                                                 : @{ActivityBlockConfiguration=; ActivityPostponeBlockConfiguration=;
                                                                                      PostponedActivityBlockConfiguration=}
     ActivitySimulatorConfiguration                                                 : @{DatabaseServerEndpoint=; DelayInterval=00:00:15; SimulationState=Disabled}
     AppDomainManagerConfiguration                                                  : @{GcCollectConfiguration=; UpdateExceptionStatisticsConfiguration=}
     BruteForceDetectorConfiguration                                                : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    CenterTelemetryManagerConfiguration                                            : @{IsEnabled=True; ServiceUrl=https://dc.applicationinsights.microsoft.com/v2/track; 
-                                                                                     ClientInstrumentationKey=fd3f5bd1-3d71-44a3-9209-d94633544903; ClientBufferMaxSize=450; 
-                                                                                     ClientSendInterval=00:10:00; UnsentTelemetrySampleInterval=01:00:00; 
-                                                                                     UnsentTelemetryRetentionPeriod=7.00:00:00; SendSystemTelemetryConfiguration=; 
-                                                                                     SendPerformanceCounterTelemetryConfiguration=; SendAlertTelemetryConfiguration=; 
-                                                                                     SendExceptionStatisticsTelemetryConfiguration=; SendUnsentTelemetriesConfiguration=; 
+    CenterTelemetryManagerConfiguration                                            : @{IsEnabled=True; ServiceUrl=https://dc.applicationinsights.microsoft.com/v2/track;
+                                                                                     ClientInstrumentationKey=fd3f5bd1-3d71-44a3-9209-d94633544903; ClientBufferMaxSize=450;
+                                                                                     ClientSendInterval=00:10:00; UnsentTelemetrySampleInterval=01:00:00;
+                                                                                     UnsentTelemetryRetentionPeriod=7.00:00:00; SendSystemTelemetryConfiguration=;
+                                                                                     SendPerformanceCounterTelemetryConfiguration=; SendAlertTelemetryConfiguration=;
+                                                                                     SendExceptionStatisticsTelemetryConfiguration=; SendUnsentTelemetriesConfiguration=;
                                                                                      UnsentTelemetryBatchSize=20}
     CenterWebApplicationConfiguration                                              : @{ServiceListeningIpEndpoint=; CommunicationCookieExpiration=00:20:00}
-    CenterWebClientConfiguration                                                   : @{RetryDelay=00:00:01; ServiceEndpoints=System.Object[]; 
+    CenterWebClientConfiguration                                                   : @{RetryDelay=00:00:01; ServiceEndpoints=System.Object[];
                                                                                      ServiceCertificateThumbprints=System.Object[]}
     ComputerPreauthenticationFailedDetectorConfiguration                           : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     ConfigurationManagerConfiguration                                              : @{UpdateConfigurationConfiguration=}
-    DatabaseConfiguration                                                          : @{ServerEndpoint=; ClientConnectTimeout=00:00:30; ClientServerSelectionTimeout=00:00:30; 
-                                                                                     ConnectionPoolMaxSize=100; WaitQueueSize=1000; ActivityBlockConfiguration=; 
-                                                                                     BackupSystemProfileMaxCount=10; CappedActivityCollectionHighActivityMaxCount=50000000; 
-                                                                                     CappedActivityCollectionLowActivityMaxCount=1000000; 
-                                                                                     CappedActivityCollectionUpdateCurrentCollectionActivityCountConfiguration=; 
-                                                                                     DataDriveFreeSpaceCriticalPercentage=0.05; DataDriveFreeSpaceCriticalSize=50 GB; 
-                                                                                     DataDriveFreeSpaceLowPercentage=0.2; DataDriveFreeSpaceLowSize=200 GB; 
-                                                                                     WorkingSetPercentage=0.25; LogFileMaxSize=50 MB; LogFileMaxCount=10; 
-                                                                                     BackupSystemProfileConfiguration=; DeleteOldCappedCollectionsConfiguration=; 
+    DatabaseConfiguration                                                          : @{ServerEndpoint=; ClientConnectTimeout=00:00:30; ClientServerSelectionTimeout=00:00:30;
+                                                                                     ConnectionPoolMaxSize=100; WaitQueueSize=1000; ActivityBlockConfiguration=;
+                                                                                     BackupSystemProfileMaxCount=10; CappedActivityCollectionHighActivityMaxCount=50000000;
+                                                                                     CappedActivityCollectionLowActivityMaxCount=1000000;
+                                                                                     CappedActivityCollectionUpdateCurrentCollectionActivityCountConfiguration=;
+                                                                                     DataDriveFreeSpaceCriticalPercentage=0.05; DataDriveFreeSpaceCriticalSize=50 GB;
+                                                                                     DataDriveFreeSpaceLowPercentage=0.2; DataDriveFreeSpaceLowSize=200 GB;
+                                                                                     WorkingSetPercentage=0.25; LogFileMaxSize=50 MB; LogFileMaxCount=10;
+                                                                                     BackupSystemProfileConfiguration=; DeleteOldCappedCollectionsConfiguration=;
                                                                                      MonitorDatabaseConfiguration=}
     DetectionConfiguration                                                         : @{AlertConfiguration=; NotificationVerbosity=Low}
-    DirectoryServicesReplicationDetectorConfiguration                              : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=; 
-                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    DirectoryServicesReplicationDetectorConfiguration                              : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=;
+                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    DnsReconnaissanceDetectorConfiguration                                         : @{ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    DnsReconnaissanceDetectorConfiguration                                         : @{ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     EncryptedTimestampEncryptionDowngradeDetectorConfiguration                     : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    EntityProfilerConfiguration                                                    : @{UpdateDetectionProfileConfiguration=; 
-                                                                                     UpdateDirectoryServicesTrafficSystemProfileConfiguration=; 
+    EntityProfilerConfiguration                                                    : @{UpdateDetectionProfileConfiguration=;
+                                                                                     UpdateDirectoryServicesTrafficSystemProfileConfiguration=;
                                                                                      EventActivityBlockConfiguration=; NetworkActivityBlockConfiguration=}
-    EntityReceiverConfiguration                                                    : @{ActivitiesDroppingEnabled=False; EntityBatchBlockConfiguration=; 
+    EntityReceiverConfiguration                                                    : @{ActivitiesDroppingEnabled=False; EntityBatchBlockConfiguration=;
                                                                                      EntityBatchBlockSizeAccumulationQueueConfiguration=; GatewayInactivityTimeout=00:15:00}
-    EnumerateSessionsDetectorConfiguration                                         : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=; 
-                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    EnumerateSessionsDetectorConfiguration                                         : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=;
+                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     ExternalIpAddressResolverConfiguration                                         : @{CacheConfiguration=; FailedResolutionsAccumulationQueueConfiguration=}
     ForgedPacDetectorConfiguration                                                 : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    GoldenTicketDetectorConfiguration                                              : @{KerberosTicketLifetime=10:00:00; ExcludedSourceAccountIds=System.Object[]; 
+    GoldenTicketDetectorConfiguration                                              : @{KerberosTicketLifetime=10:00:00; ExcludedSourceAccountIds=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     HoneytokenActivityDetectorConfiguration                                        : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     HttpClientConfiguration                                                        : @{BufferMaxSize=128 MB; Timeout=00:10:00}
     IntelligenceProxyConfiguration                                                 : @{ConnectionLimit=50; WebClientConfiguration=}
     LdapBruteForceDetectorConfiguration                                            : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     LdapCleartextPasswordDetectorConfiguration                                     : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    LoadSimulatorRecorderConfiguration                                             : @{IsEnabled=False; UniqueEntityBatchBlockConfiguration=; EntityBatchBlockConfiguration=; 
+    LoadSimulatorRecorderConfiguration                                             : @{IsEnabled=False; UniqueEntityBatchBlockConfiguration=; EntityBatchBlockConfiguration=;
                                                                                      FileSegmentSize=5 MB}
     LocalizerConfiguration                                                         : @{LocaleId=en-us}
-    MailClientConfiguration                                                        : @{IsEnabled=False; From=; ServerEndpoint=; ServerSslEnabled=False; 
-                                                                                     ServerSslAcceptAnyServerCertificate=False; AuthenticationEnabled=False; 
+    MailClientConfiguration                                                        : @{IsEnabled=False; From=; ServerEndpoint=; ServerSslEnabled=False;
+                                                                                     ServerSslAcceptAnyServerCertificate=False; AuthenticationEnabled=False;
                                                                                      AuthenticationAccountName=; AuthenticationAccountPasswordEncrypted=}
-    MassiveObjectDeletionDetectorConfiguration                                     : @{DetectMassiveObjectDeletionConfiguration=; BlockConfiguration=; IsEnabled=True; 
+    MassiveObjectDeletionDetectorConfiguration                                     : @{DetectMassiveObjectDeletionConfiguration=; BlockConfiguration=; IsEnabled=True;
                                                                                      UpsertProfileConfiguration=}
     MemoryStreamPoolConfiguration                                                  : @{BlockSize=128 KB; LargeBlockMultipleSize=1 MB; BufferMaxSize=128 MB}
-    MonitoringClientConfiguration                                                  : @{AlertConfiguration=; MonitoringAlertTypeNameToIsEnabledMapping=; 
+    MonitoringClientConfiguration                                                  : @{AlertConfiguration=; MonitoringAlertTypeNameToIsEnabledMapping=;
                                                                                      RenotificationInterval=7.00:00:00}
-    MonitoringEngineConfiguration                                                  : @{CenterNotReceivingTrafficTimeout=01:00:00; GatewayInactivityTimeout=00:05:00; 
-                                                                                     GatewayStartFailureTimeout=00:30:00; MonitoringAlertExpiration=30.00:00:00; 
+    MonitoringEngineConfiguration                                                  : @{CenterNotReceivingTrafficTimeout=01:00:00; GatewayInactivityTimeout=00:05:00;
+                                                                                     GatewayStartFailureTimeout=00:30:00; MonitoringAlertExpiration=30.00:00:00;
                                                                                      DeleteOldMonitoringAlertsConfiguration=; MonitoringCycleConfiguration=}
-    NetworkActivityProcessorConfiguration                                          : @{ParentKerberosResponseTicketHashKeyToParentKerberosDataMappingConfiguration=; 
+    NetworkActivityProcessorConfiguration                                          : @{ParentKerberosResponseTicketHashKeyToParentKerberosDataMappingConfiguration=;
                                                                                      SaveParentKerberosBloomFiltersConfiguration=}
     NotificationEngineConfiguration                                                : @{NotificationCycleConfiguration=}
     PassTheHashDetectorConfiguration                                               : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    PassTheTicketDetectorConfiguration                                             : @{HandleInvisibleSuspiciousActivitiesConfiguration=; 
-                                                                                     ValidateInvisibleSuspiciousActivitiesTimeout=02:00:00; 
-                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    PassTheTicketDetectorConfiguration                                             : @{HandleInvisibleSuspiciousActivitiesConfiguration=;
+                                                                                     ValidateInvisibleSuspiciousActivitiesTimeout=02:00:00;
+                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    RemoteExecutionDetectorConfiguration                                           : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=; 
-                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    RemoteExecutionDetectorConfiguration                                           : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=;
+                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     ReporterConfiguration                                                          : @{ReportTypeToConfigurationMapping=; SendPeriodicReportsConfiguration=}
-    RetrieveDataProtectionBackupKeyDetectorConfiguration                           : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=; 
-                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[]; 
+    RetrieveDataProtectionBackupKeyDetectorConfiguration                           : @{OperationRetentionPeriod=00:03:00; RemoveOldOperationsConfiguration=;
+                                                                                     ExcludedSourceComputerIds=System.Object[]; ExcludedSubnets=System.Object[];
                                                                                      BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
-    SamrReconnaissanceDetectorConfiguration                                        : @{HandleInvisibleSuspiciousActivitiesConfiguration=; OperationRetentionPeriod=00:03:00; 
-                                                                                     RemoveOldOperationsConfiguration=; ExcludedSourceComputerIds=System.Object[]; 
-                                                                                     ExcludedSubnets=System.Object[]; BlockConfiguration=; IsEnabled=True; 
+    SamrReconnaissanceDetectorConfiguration                                        : @{HandleInvisibleSuspiciousActivitiesConfiguration=; OperationRetentionPeriod=00:03:00;
+                                                                                     RemoveOldOperationsConfiguration=; ExcludedSourceComputerIds=System.Object[];
+                                                                                     ExcludedSubnets=System.Object[]; BlockConfiguration=; IsEnabled=True;
                                                                                      UpsertProfileConfiguration=}
     SecretManagerConfiguration                                                     : @{CertificateThumbprint=217562C96ECAF3A574303629848640F556A253FB}
     ServiceSystemProfileConfiguration                                              : @{Id=58f53fded8c26706b8ebb122}
-    SoftwareUpdaterConfiguration                                                   : @{IsEnabled=True; IsGatewayAutomaticSoftwareUpdateEnabled=True; 
-                                                                                     IsLightweightGatewayAutomaticRestartEnabled=False; 
-                                                                                     MicrosoftUpdateCategoryId=6ac905a5-286b-43eb-97e2-e23b3848c87d; 
+    SoftwareUpdaterConfiguration                                                   : @{IsEnabled=True; IsGatewayAutomaticSoftwareUpdateEnabled=True;
+                                                                                     IsLightweightGatewayAutomaticRestartEnabled=False;
+                                                                                     MicrosoftUpdateCategoryId=6ac905a5-286b-43eb-97e2-e23b3848c87d;
                                                                                      CheckSoftwareUpdatesConfiguration=}
     SourceAccountSupportedEncryptionTypesEncryptionDowngradeDetectorConfiguration  : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     SourceComputerSupportedEncryptionTypesEncryptionDowngradeDetectorConfiguration : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     SyncManagerConfiguration                                                       : @{UpdateClientsConfiguration=}
-    SyslogClientConfiguration                                                      : @{IsEnabled=False; ServerEndpoint=; ServerTransport=Udp; 
+    SyslogClientConfiguration                                                      : @{IsEnabled=False; ServerEndpoint=; ServerTransport=Udp;
                                                                                      ServerTransportTimeout=00:00:10; Serializer=Rfc5424}
     TgtEncryptionDowngradeDetectorConfiguration                                    : @{BlockConfiguration=; IsEnabled=True; UpsertProfileConfiguration=}
     UniqueEntityCacheConfiguration                                                 : @{CacheConfiguration=}
-    UniqueEntityProcessorConfiguration                                             : @{HoneytokenAccountIds=System.Object[]; UniqueEntityBlockParallelismDegree=100; 
-                                                                                     UpdateSecurityPrincipalsSensitivityConfiguration=; 
-                                                                                     GetHighFunctionalityDomainControlerIdsConfiguration=; 
+    UniqueEntityProcessorConfiguration                                             : @{HoneytokenAccountIds=System.Object[]; UniqueEntityBlockParallelismDegree=100;
+                                                                                     UpdateSecurityPrincipalsSensitivityConfiguration=;
+                                                                                     GetHighFunctionalityDomainControlerIdsConfiguration=;
                                                                                      GetHoneytokenAccountIdsConfiguration=}
-    UniqueEntityProfileCacheConfiguration                                          : @{CacheConfiguration=; UniqueEntityProfileBlockConfiguration=; 
+    UniqueEntityProfileCacheConfiguration                                          : @{CacheConfiguration=; UniqueEntityProfileBlockConfiguration=;
                                                                                      StoreUniqueEntityProfilesConfiguration=}
     UserAccountClusterDetectorConfiguration                                        : @{ClusterUserAccountsConfiguration=}
     WindowsEventLogClientConfiguration                                             : @{IsEnabled=True}
@@ -435,7 +436,7 @@ function Get-ATAMonitoringAlert {
         if ($Status) {
             $result | Where-Objecthere-Objecthere-Object {$_.status -eq $Status}
         }
-        
+
         if (!$Status) {
             $result
         }
@@ -482,7 +483,7 @@ function Set-ATAMonitoringAlert {
     )
     Process {
         if ($PSCmdlet.ParameterSetName -eq 'Fetch') {
-            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) { 
+            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
                 $body = @{}
                 if ($Status) {$body += @{Status = $Status}
                 }
@@ -506,14 +507,14 @@ function Set-ATAMonitoringAlert {
 
     DnsName                    : 2012R2-DC1.contoso.com
     DomainController           : @{IsGlobalCatalog=True; IsPrimary=True; IsReadOnly=False}
-    IpAddress                  : 
+    IpAddress                  :
     IsDomainController         : True
     IsServer                   : True
     OperatingSystemDisplayName : Windows Server 2012 R2 Datacenter, 6.3 (9600)
     SystemDisplayName          : 2012R2-DC1
-    BadPasswordTime            : 
+    BadPasswordTime            :
     ConstrainedDelegationSpns  : {}
-    ExpiryTime                 : 
+    ExpiryTime                 :
     IsDisabled                 : False
     IsExpired                  : False
     IsHoneytoken               : False
@@ -523,12 +524,12 @@ function Set-ATAMonitoringAlert {
     IsPasswordNeverExpires     : False
     IsPasswordNotRequired      : False
     IsSmartcardRequired        : False
-    PasswordExpiryTime         : 
+    PasswordExpiryTime         :
     PasswordUpdateTime         : 2017-04-17T17:59:57.0826645Z
-    Spns                       : {Dfsr-12F9A27C-BF97-4787-9364-D31B6C55EB04/2012R2-DC1.contoso.com, ldap/2012R2-DC1.contoso.com/ForestDnsZones.contoso.com, 
+    Spns                       : {Dfsr-12F9A27C-BF97-4787-9364-D31B6C55EB04/2012R2-DC1.contoso.com, ldap/2012R2-DC1.contoso.com/ForestDnsZones.contoso.com,
                                  ldap/2012R2-DC1.contoso.com/DomainDnsZones.contoso.com, TERMSRV/2012R2-DC1...}
-    UpnName                    : 
-    Description                : 
+    UpnName                    :
+    Description                :
     IsSensitive                : True
     SamName                    : 2012R2-DC1$
     DomainId                   : 7c915dca-0591-4abe-84c6-2522466bed4d
@@ -538,7 +539,7 @@ function Set-ATAMonitoringAlert {
     IsDeleted                  : False
     IsNew                      : False
     Sid                        : S-1-5-21-3599243929-1086515894-1402892407-1001
-    SystemSubDisplayName       : 
+    SystemSubDisplayName       :
     Id                         : ff336d33-81f4-458c-b70b-33f0070ffb20
     IsPartial                  : False
     Type                       : Computer
@@ -592,7 +593,7 @@ function Get-ATAUniqueEntity {
         [Parameter(Mandatory = $false,
             ParameterSetName = 'Fetch')]
         [switch]$ParentGroupId
-        
+
     )
     begin {
         if ($Profile -and $ParentGroupId) { Write-Error "You may not set both Profile and ParentGroupId."}
@@ -622,3 +623,8 @@ function Get-ATAUniqueEntity {
 }
 #endregion
 #endregion
+
+# Export only the functions using PowerShell standard verb-noun naming.
+# Be sure to list each exported functions in the FunctionsToExport field of the module manifest file.
+# This improves performance of command discovery in PowerShell.
+Export-ModuleMember -Function *-ATA*
