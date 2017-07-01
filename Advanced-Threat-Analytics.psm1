@@ -1,18 +1,42 @@
-# Implement your module commands in this script.
-#ATA PowerShell Module
-#Required Version ATA 1.8+
-#Author: Mike Kassis
-#Disclaimer: This is an open source community project and is not part of the ATA product.
+#region ----CMDLETS----
 
-#region Global Variables
-#If localhost does not resolve to the ATA Center, you will need to change this variable to your ATA Center URL.
-#Example: $ATACenter = "atacenter.mydomain.com"
-$ATACenter = "localhost"
-#endregion
+<#
+.Synopsis
+Set-ATACenterURL is for setting the the URL to be used for the rest of the cmdlets.
 
-#region Use this for Self-Signed Certs
+.DESCRIPTION
+By default, this module uses localhost as the URL. This can be overwritten with Set-ATACenterURL. It is recommended to run this cmdlet in your profile to prevent having to set it for each new session.
 
-#Credit to railroadmanuk for this code.  https://virtualbrakeman.wordpress.com/2016/03/20/powershell-could-not-create-ssltls-secure-channel/
+.EXAMPLE
+Set-ATACenterURL -URL atacenter.contoso.com
+
+The above cmdlet sets $ATACenter as a global variable in the current session. This variable is used for other cmdlets in this module.
+#>
+function Set-ATACenterURL {
+    [CmdletBinding()]
+    Param
+    (
+        # ATA Center URL. Located in ATA Center Configuration. (Example: atacenter.mydomain.com)
+        [Parameter(Mandatory = $true)]
+        [ValidatePattern('[a-z0-9].[a-z0-9].[a-z0-9]')]
+        [string]$URL
+    )
+    $Global:ATACenter = "$URL"
+}
+
+<#
+.Synopsis
+Resolve-ATASelfSignedCert is used if you are having issues with this module and know you are using a self signed certificate for your ATA Center.
+
+.DESCRIPTION
+Credit to railroadmanuk for most of this code.  
+https://virtualbrakeman.wordpress.com/2016/03/20/powershell-could-not-create-ssltls-secure-channel/
+
+.EXAMPLE
+Resolve-ATASelfSignedCert
+
+The above cmdlet attempts to remediate the SSL error received from using a self-signed certificate.
+#>
 function Resolve-ATASelfSignedCert {
     try {
         Add-Type -TypeDefinition @"
@@ -33,12 +57,8 @@ return true;
         Write-Error $_
     }
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
-}
-Resolve-ATASelfSignedCert
-#endregion
+    }
 
-#region ----CMDLETS----
-#region Get-ATASuspiciousActivity
 <#
 .Synopsis
     Get-ATASuspiciousActivity is used to retrieve suspicious activities triggered in ATA.
@@ -148,8 +168,7 @@ function Get-ATASuspiciousActivity {
     end {
     }
 }
-#endregion
-#region Set-ATASuspiciousActivity
+
 <#
 .Synopsis
     Set-ATASuspiciousActivity is used to update the status of a suspcious activity.
@@ -221,7 +240,7 @@ function Set-ATASuspiciousActivity {
         $result
     }
 }
-#endregion
+
 #region Get-ATAStatus
 <#
 .Synopsis
@@ -394,8 +413,7 @@ function Get-ATAStatus {
         $result
     }
 }
-#endregion
-#region Get-ATAMonitoringAlert
+
 <#
 .Synopsis
     Get-ATAMonitoringAlert retrieves all health alerts in ATA.
@@ -434,7 +452,7 @@ function Get-ATAMonitoringAlert {
     }
     end {
         if ($Status) {
-            $result | Where-Objecthere-Objecthere-Object {$_.status -eq $Status}
+            $result | Where-Object {$_.status -eq $Status}
         }
 
         if (!$Status) {
@@ -442,8 +460,7 @@ function Get-ATAMonitoringAlert {
         }
     }
 }
-#endregion
-#region Set-ATAMonitoringAlert
+
 <#
 .Synopsis
     Set-ATAMonitoringAlert is used to update the status for an alert.
@@ -495,8 +512,7 @@ function Set-ATAMonitoringAlert {
         $result
     }
 }
-#endregion
-#region Get-ATAUniqueEntity
+
 <#
 .Synopsis
     Get-ATAUniqueEntity is used to retrieve information around unique entities in ATA.
@@ -621,7 +637,7 @@ function Get-ATAUniqueEntity {
     end {
     }
 }
-#endregion
+
 #endregion
 
 # Export only the functions using PowerShell standard verb-noun naming.
