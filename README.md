@@ -31,7 +31,7 @@ Install-Module Advanced-Threat-Analytics  
   
 The module should install from the PowerShell gallery. If localhost resolves to your ATACenter, you should be all set to start using the cmdlets. If not, you will want to run Set-ATACenterURL and specify the URL for your ATA Center. This can be found in the configuration.  
   
-#### No Internet Connectivity
+### No Internet Connectivity
 Download the zip file from technet (URL coming) and place the contained Azure-Security-Center folder in any approved modules path.  
 For more information on installing modules see: https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx 
   
