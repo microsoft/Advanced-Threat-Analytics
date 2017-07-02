@@ -4,23 +4,26 @@ While this module is signed by Microsoft, it should be made very clear that it i
 
 # Installation
   
-## ATA Center
-
-### Windows Server 2016
+## ATA Center vs. Management Server
+It is recommended to install the module either directly on the ATA Center or on a domain joined PC. The module uses the credentials of the signed in Windows user to authenticate to the ATA Center. This means that you will not be able to use the module with a user that cannot also log into the ATA Center.  
   
-#### Internet Connectivity
+If you install the module on the ATA Center, you can either log into the ATA Center to execute commands or use 'Import-PSSession -Module Advanced-Threat-Analytics' to import the module into a temporary session on a management PC. By default the module is looking for the ATA Center via localhost, so if you choose to install the module on a domain-joined management PC, you will need to run Set-ATACenterURL and specify the ATA Center URL. (example: atacenter.contoso.com)  
+  
+## Windows Server 2016
+   
+### Internet Connectivity
 Run PowerShell as an administrator and execute the below command:  
 Install-Module Advanced-Threat-Analytics  
   
 The module should install from the PowerShell gallery. If localhost resolves to your ATACenter, you should be all set to start using the cmdlets. If not, you will want to run Set-ATACenterURL and specify the URL for your ATA Center. This can be found in the configuration.  
   
-#### No Internet Connectivity  
+### No Internet Connectivity  
 Download the zip file from technet (URL coming) and place the contained Azure-Security-Center folder in any approved modules path.  
 For more information on installing modules see: https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx 
   
-### Windows Server 2012R2
+## Windows Server 2012R2
   
-#### Internet Connectivity
+### Internet Connectivity
 Install the Package Manager MSI to enable Module and Package cmdlets on the server: https://www.microsoft.com/en-us/download/details.aspx?id=51451 
   
 Run PowerShell as an administrator and execute the below command:  
