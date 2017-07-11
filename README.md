@@ -36,6 +36,19 @@ The module should install from the PowerShell gallery. If localhost resolves to 
 ### No Internet Connectivity
 Download the zip file from technet (URL coming) and place the contained Azure-Security-Center folder in any approved modules path.  
 For more information on installing modules see: https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx 
+    
+# First steps  
+  
+## Set your ATA Center URL
+Step #1 after installing the module will be to set your ATA Center URL. This is simply a global variable $ATACenter that should reflect the URL you set in the ATA Center configuration page. (example: atacenter.mydomain.com or 10.2.3.5) Do not use "https://". To assist with setting the variable, I added a simple function that sets it for you called Set-ATACenterURL.  
+  
+## Self Signed Certificates
+If you are using a self-signed certificate in your ATA Center, there is a good chance you will see an error when using the module that says something about inability to create a secure SSL/TLS channel. If you get this error, please run the Resolve-ATASelfSignedCert cmdlet and try again.
+
+## Looking at the list of cmdlets  
+Get-Command -Module Advanced-Threat-Analytics  
+  
+This command will show you the available functions in the module.  
   
 # Contributing
 
