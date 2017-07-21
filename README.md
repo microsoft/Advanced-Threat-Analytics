@@ -2,7 +2,7 @@
 Note! This module requires ATA 1.8.   
   
 The Advanced-Threat-Analytics PowerShell module was designed to make it easy for customers to interface with the ATA Center through a simple set of cmdlets.  
-While this module is signed by Microsoft, it should be made very clear that it is not a formal part of the ATA product and there is no warranty of any kind or guaranteed support.
+While the Technet Gallery version of this module is signed by Microsoft it should be made very clear that it is not a formal part of the ATA product and there is no warranty of any kind or guaranteed support.
 
 # Installation
   
