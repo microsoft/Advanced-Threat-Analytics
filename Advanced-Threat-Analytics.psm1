@@ -1,4 +1,3 @@
-#region ----CMDLETS----
 
 <#
 .Synopsis
@@ -17,7 +16,8 @@ function Set-ATACenterURL {
     Param
     (
         # ATA Center URL. Located in ATA Center Configuration. (Example: atacenter.mydomain.com)
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true,
+                    Position = 0)]
         [ValidatePattern('[a-z0-9].[a-z0-9].[a-z0-9]')]
         [string]$URL
     )
@@ -26,7 +26,7 @@ function Set-ATACenterURL {
 
 <#
 .Synopsis
-Resolve-ATASelfSignedCert is used if you are having issues with this module and know you are using a self signed certificate for your ATA Center.
+Resolve-ATASelfSignedCert is used if you are having SSL/TLS tunnel issues with this module and know you are using a self signed certificate for your ATA Center.
 
 .DESCRIPTION
 Credit to railroadmanuk for most of this code.  
@@ -120,6 +120,7 @@ function Get-ATASuspiciousActivity {
         # Unique Id of Suspicious Activity.
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
+            Position = 0,
             ParameterSetName = 'Fetch')]
         [ValidatePattern('^[a-f0-9]{24}$')]
         [string]$Id,
@@ -135,34 +136,48 @@ function Get-ATASuspiciousActivity {
         [string]$Export
     )
     begin {
+        if (!$ATACenter) {$ATACenter = 'localhost'}
         if ($Details -and $Excel) {Write-Error "You may not select both 'Excel' and 'Details' switch parameters."}
     }
     Process {
-        if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and !$Details -and !$Export) {
-            $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id" -Method Get -UseDefaultCredentials
-            $result
-        }
-        if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Details) {
-            $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id/details" -Method Get -UseDefaultCredentials
-            $result.DetailsRecords
-        }
-        if ($Details -and !$Id) {
-            Write-Error "You must specify a suspicious activity ID when using the 'details' switch."
-        }
-        if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Export) {
-            try {
-                $ExcelFilePath = $Export + "/SA_$Id" + '.xlsx'
-                $ExcelLocale = 'excel?localeId=en-us'
-                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$Id/$ExcelLocale" -OutFile $ExcelFilePath -Method Get -UseDefaultCredentials
+        try{
+            if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and !$Details -and !$Export) {
+                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id" -Method Get -UseDefaultCredentials
                 $result
             }
-            catch {
-                $_
+            if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Details) {
+                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id/details" -Method Get -UseDefaultCredentials
+                $result.DetailsRecords
+            }
+            if ($Details -and !$Id) {
+                Write-Error "You must specify a suspicious activity ID when using the 'details' switch."
+            }
+            if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Export) {
+                try {
+                    $ExcelFilePath = $Export + "/SA_$Id" + '.xlsx'
+                    $ExcelLocale = 'excel?localeId=en-us'
+                    $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$Id/$ExcelLocale" -OutFile $ExcelFilePath -Method Get -UseDefaultCredentials
+                    $result
+                }
+                catch {
+                    $_
+                }
+            }
+            if ($PSCmdlet.ParameterSetName -ne 'Fetch') {
+                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities" -Method Get -UseDefaultCredentials
+                $result
             }
         }
-        if ($PSCmdlet.ParameterSetName -ne 'Fetch') {
-            $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities" -Method Get -UseDefaultCredentials
-            $result
+        catch{
+            if ($_.Exception.Message -match 'SSL/TLS secure channel'){
+                Write-Error "Could not establish trust relationship for the SSL/TLS secure channel. Please run Resolve-ATASelfSignedCert and try again." -ErrorAction Stop
+            }
+            if ($_.Exception.Message -match 'unable to connect'){
+                Write-Error "Unable to connect to remote server. Your ATACenter url is set to $ATACenter. Run Set-ATACenterURL '<url>' if this is incorrect." -ErrorAction Stop
+            }
+            else {
+                Write-Error $_ -ErrorAction Stop
+            }
         }
     }
     end {
@@ -190,6 +205,7 @@ function Set-ATASuspiciousActivity {
         # Unique Id of the Suspicious Activity
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true,
+            Position = 0,
             ParameterSetName = 'Fetch')]
         [ValidatePattern('^[a-f0-9]{24}$')]
         [string]$Id,
@@ -197,6 +213,7 @@ function Set-ATASuspiciousActivity {
         # The specified status to update the Suspicious Activity. (Open, Closed, Suppressed)
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
+            Position = 1,
             ParameterSetName = 'Fetch')]
         [ValidateSet('Open', 'Closed', 'CloseAndExclude', 'Suppressed', 'Delete', 'DeleteSameType')]
         [string]$Status,
@@ -207,32 +224,45 @@ function Set-ATASuspiciousActivity {
         [switch]$Force
     )
     Process {
-        if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -ne 'Delete' -and $Status -ne 'DeleteSameType') {
-            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
-                $body = @{}
-                if ($Status) {$body += @{Status = $Status}
+        try{
+            if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -ne 'Delete' -and $Status -ne 'DeleteSameType') {
+                if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
+                    $body = @{}
+                    if ($Status) {$body += @{Status = $Status}
+                    }
+                    if ($Status -eq 'Closed') {$body += @{ShouldExclude = $false}
+                    }
+                    if ($Status -eq 'CloseAndExclude') {$body += @{ShouldExclude = $true}
+                    }
+                    $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id" -Method Post -Body $body -UseDefaultCredentials
                 }
-                if ($Status -eq 'Closed') {$body += @{ShouldExclude = $false}
+            }
+
+            if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -eq 'Delete') {
+                if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
+                    $ShouldDelete = '?shouldDeleteSameType=false'
+                    $body = @{}
+                    $body += @{shouldDeleteSametype = $false}
+                    $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id$ShouldDelete" -Method Delete -UseDefaultCredentials
                 }
-                if ($Status -eq 'CloseAndExclude') {$body += @{ShouldExclude = $true}
+            }
+
+            if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -eq 'DeleteSameType' -and $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
+                if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
+                    $ShouldDelete = '?shouldDeleteSameType=true'
+                    $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id$ShouldDelete" -Method Delete -UseDefaultCredentials
                 }
-                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id" -Method Post -Body $body -UseDefaultCredentials
             }
         }
-
-        if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -eq 'Delete') {
-            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
-                $ShouldDelete = '?shouldDeleteSameType=false'
-                $body = @{}
-                $body += @{shouldDeleteSametype = $false}
-                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id$ShouldDelete" -Method Delete -UseDefaultCredentials
+        catch{
+            if ($_.Exception.Message -match 'SSL/TLS secure channel'){
+                Write-Error "Could not establish trust relationship for the SSL/TLS secure channel. Please run Resolve-ATASelfSignedCert and try again." -ErrorAction Stop
             }
-        }
-
-        if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -eq 'DeleteSameType' -and $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
-            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
-                $ShouldDelete = '?shouldDeleteSameType=true'
-                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/suspiciousActivities/$id$ShouldDelete" -Method Delete -UseDefaultCredentials
+            if ($_.Exception.Message -match 'unable to connect'){
+                Write-Error "Unable to connect to remote server. Your ATACenter url is set to $ATACenter. Run Set-ATACenterURL '<url>' if this is incorrect." -ErrorAction Stop
+            }
+            else {
+                Write-Error $_ -ErrorAction Stop
             }
         }
     }
@@ -402,15 +432,24 @@ function Get-ATAStatus {
             ParameterSetName = 'License')]
         [switch]$License
     )
-    Process {
+    try {
         if ($Center) {$foo = "center"}
         if ($Gateway) {$foo = "gateways"}
         if ($License) {$foo = "license"}
 
         $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/systemProfiles/$foo" -Method Get -UseDefaultCredentials
-    }
-    end {
         $result
+    }
+    catch{
+        if ($_.Exception.Message -match 'SSL/TLS secure channel'){
+            Write-Error "Could not establish trust relationship for the SSL/TLS secure channel. Please run Resolve-ATASelfSignedCert and try again." -ErrorAction Stop
+        }
+        if ($_.Exception.Message -match 'unable to connect'){
+            Write-Error "Unable to connect to remote server. Your ATACenter url is set to $ATACenter. Run Set-ATACenterURL '<url>' if this is incorrect." -ErrorAction Stop
+        }
+        else {
+            Write-Error $_ -ErrorAction Stop
+        }
     }
 }
 
@@ -448,7 +487,20 @@ function Get-ATAMonitoringAlert {
         [string]$Status
     )
     Process {
-        $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/monitoringAlerts" -Method Get -UseDefaultCredentials
+        try{
+            $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/monitoringAlerts" -Method Get -UseDefaultCredentials
+        }
+        catch{
+            if ($_.Exception.Message -match 'SSL/TLS secure channel'){
+                Write-Error "Could not establish trust relationship for the SSL/TLS secure channel. Please run Resolve-ATASelfSignedCert and try again." -ErrorAction Stop
+            }
+            if ($_.Exception.Message -match 'unable to connect'){
+                Write-Error "Unable to connect to remote server. Your ATACenter url is set to $ATACenter. Run Set-ATACenterURL '<url>' if this is incorrect." -ErrorAction Stop
+            }
+            else {
+                Write-Error $_ -ErrorAction Stop
+            }
+        }
     }
     end {
         if ($Status) {
@@ -458,58 +510,6 @@ function Get-ATAMonitoringAlert {
         if (!$Status) {
             $result
         }
-    }
-}
-
-<#
-.Synopsis
-    Set-ATAMonitoringAlert is used to update the status for an alert.
-.DESCRIPTION
-    Updates a Monitoring Alert's status.
-.EXAMPLE
-    Set-ATAMonitoringAlert -id 5911f086b5487a052c205f69 -Status Closed
-
-    The above example sets a specific Monitoring Alert to Closed
-.EXAMPLE
-    Get-ATAMonitoringAlert -Status Open | Set-ATAMonitoringAlert -Status Closed}
-
-    The above example gets all Open Monitoring Alerts and sets them as Closed.
-#>
-function Set-ATAMonitoringAlert {
-    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
-    Param
-    (
-        # Unique Id of the Monitoring Alert
-        [Parameter(Mandatory = $true,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'Fetch')]
-        [ValidatePattern('^[a-f0-9]{24}$')]
-        [string]$Id,
-
-        # Status to update the monitoring alert. (Open, Closed, Suppressed)
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'Fetch')]
-        [ValidateSet('Open', 'Closed', 'Suppressed')]
-        [string]$Status,
-
-        # Suppress 'Confirm' dialogue
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $false)]
-        [switch]$Force
-    )
-    Process {
-        if ($PSCmdlet.ParameterSetName -eq 'Fetch') {
-            if ($Force -or $PSCmdlet.ShouldProcess($Id, "Changing status to $Status")) {
-                $body = @{}
-                if ($Status) {$body += @{Status = $Status}
-                }
-                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/monitoringAlerts/$id" -Method Post -Body $body -UseDefaultCredentials
-            }
-        }
-    }
-    end {
-        $result
     }
 }
 
@@ -596,6 +596,7 @@ function Get-ATAUniqueEntity {
         # Unique Id of Unique Entity
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true,
+            Position = 0,
             ParameterSetName = 'Fetch')]
         [Alias('SourceComputerId', 'ExclusionUniqueEntityId')]
         [string]$Id,
@@ -615,32 +616,38 @@ function Get-ATAUniqueEntity {
         if ($Profile -and $ParentGroupId) { Write-Error "You may not set both Profile and ParentGroupId."}
     }
     Process {
-        if ($Id -and !$Profile -and !$ParentGroupId) {
-            $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/uniqueEntities/$Id" -Method Get -UseDefaultCredentials
+        try{
+            if ($Id -and !$Profile -and !$ParentGroupId) {
+                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/uniqueEntities/$Id" -Method Get -UseDefaultCredentials
 
-            $result
-        }
-        if ($Id -and $Profile) {
-            $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/uniqueEntities/$Id/profile" -Method Get -UseDefaultCredentials
+                $result
+            }
+            if ($Id -and $Profile) {
+                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/uniqueEntities/$Id/profile" -Method Get -UseDefaultCredentials
 
-            $result
-        }
-        if ($Id -and $ParentGroupId) {
-            $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/uniqueEntities/$Id/parentGroupIds" -Method Get -UseDefaultCredentials
+                $result
+            }
+            if ($Id -and $ParentGroupId) {
+                $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/uniqueEntities/$Id/parentGroupIds" -Method Get -UseDefaultCredentials
 
-            $result
+                $result
+            }
+            if (!$Id -and $Profile) {
+                Write-Error "You must specify a unique entity ID when using the 'Profile' switch."
+            }
         }
-        if (!$Id -and $Profile) {
-            Write-Error "You must specify a unique entity ID when using the 'Profile' switch."
+        catch{
+            if ($_.Exception.Message -match 'SSL/TLS secure channel'){
+                Write-Error "Could not establish trust relationship for the SSL/TLS secure channel. Please run Resolve-ATASelfSignedCert and try again." -ErrorAction Stop
+            }
+            if ($_.Exception.Message -match 'unable to connect'){
+                Write-Error "Unable to connect to remote server. Your ATACenter url is set to $ATACenter. Run Set-ATACenterURL '<url>' if this is incorrect." -ErrorAction Stop
+            }
+            else {
+                Write-Error $_ -ErrorAction Stop
+            }
         }
     }
     end {
     }
 }
-
-#endregion
-
-# Export only the functions using PowerShell standard verb-noun naming.
-# Be sure to list each exported functions in the FunctionsToExport field of the module manifest file.
-# This improves performance of command discovery in PowerShell.
-Export-ModuleMember -Function *-ATA*
