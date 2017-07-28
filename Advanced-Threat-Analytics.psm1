@@ -18,7 +18,6 @@ function Set-ATACenterURL {
         # ATA Center URL. Located in ATA Center Configuration. (Example: atacenter.mydomain.com)
         [Parameter(Mandatory = $true,
                     Position = 0)]
-        [ValidatePattern('[a-z0-9].[a-z0-9].[a-z0-9]')]
         [string]$URL
     )
     $Global:ATACenter = "$URL"
@@ -29,7 +28,7 @@ function Set-ATACenterURL {
 Resolve-ATASelfSignedCert is used if you are having SSL/TLS tunnel issues with this module and know you are using a self signed certificate for your ATA Center.
 
 .DESCRIPTION
-Credit to railroadmanuk for most of this code.  
+Credit to railroadmanuk for most of this code.
 https://virtualbrakeman.wordpress.com/2016/03/20/powershell-could-not-create-ssltls-secure-channel/
 
 .EXAMPLE
