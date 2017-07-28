@@ -136,7 +136,7 @@ function Get-ATASuspiciousActivity {
         [string]$Export
     )
     begin {
-        if (!$ATACenter) {$ATACenter = 'localhost'}
+        if (!$Global:ATACenter) {$Script:ATACenter = 'localhost'}
         if ($Details -and $Excel) {Write-Error "You may not select both 'Excel' and 'Details' switch parameters."}
     }
     Process {
@@ -223,6 +223,9 @@ function Set-ATASuspiciousActivity {
             ValueFromPipelineByPropertyName = $false)]
         [switch]$Force
     )
+    Begin{
+        if (!$Global:ATACenter) {$Script:ATACenter = 'localhost'}
+    }
     Process {
         try{
             if ($PSCmdlet.ParameterSetName -eq 'Fetch' -and $Status -ne 'Delete' -and $Status -ne 'DeleteSameType') {
@@ -432,6 +435,7 @@ function Get-ATAStatus {
             ParameterSetName = 'License')]
         [switch]$License
     )
+    if (!$Global:ATACenter) {$Script:ATACenter = 'localhost'}
     try {
         if ($Center) {$foo = "center"}
         if ($Gateway) {$foo = "gateways"}
@@ -486,6 +490,9 @@ function Get-ATAMonitoringAlert {
         [ValidateSet('Open', 'Closed', 'Suppressed')]
         [string]$Status
     )
+    Begin{
+        if (!$ATACenter) {$ATACenter = 'localhost'}
+    }
     Process {
         try{
             $result = Invoke-RestMethod -Uri "https://$ATACenter/api/management/monitoringAlerts" -Method Get -UseDefaultCredentials
@@ -613,6 +620,7 @@ function Get-ATAUniqueEntity {
 
     )
     begin {
+        if (!$Global:ATACenter) {$Script:ATACenter = 'localhost'}
         if ($Profile -and $ParentGroupId) { Write-Error "You may not set both Profile and ParentGroupId."}
     }
     Process {
