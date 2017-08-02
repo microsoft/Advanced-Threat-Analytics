@@ -12,7 +12,7 @@
 RootModule = 'Advanced-Threat-Analytics.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.11'
+ModuleVersion = '0.0.12'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -114,7 +114,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
-# HelpInfoURI = ''
+HelpInfoURI = 'https://github.com/Microsoft/Advanced-Threat-Analytics/blob/master/README.md'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''

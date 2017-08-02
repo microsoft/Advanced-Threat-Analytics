@@ -5,7 +5,7 @@ The Advanced-Threat-Analytics PowerShell module was designed to make it easy for
 While this module is signed by Microsoft, it should be made very clear that it is not a formal part of the ATA product and there is no warranty of any kind or guaranteed support.
 
 # Installation
-
+  
 ## ATA Center vs. Management Server
 It is recommended to install the module either directly on the ATA Center or on a domain joined PC. The module uses the credentials of the signed in Windows user to authenticate to the ATA Center. This means that you will not be able to use the module with a user that cannot also log into the ATA Center.
 
@@ -20,7 +20,7 @@ Install-Module Advanced-Threat-Analytics
 The module should install from the PowerShell gallery. If localhost resolves to your ATACenter, you should be all set to start using the cmdlets. If not, you will want to run Set-ATACenterURL and specify the URL for your ATA Center. This can be found in the configuration.
 
 ### No Internet Connectivity
-Download the zip file from technet (URL coming) and place the contained Azure-Security-Center folder in any approved modules path.
+Clone the module from this github and place the contained Azure-Security-Center folder in any approved module path.
 For more information on installing modules see: https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx
 
 ## Windows Server 2012R2
@@ -34,7 +34,7 @@ Install-Module Advanced-Threat-Analytics  
 The module should install from the PowerShell gallery. If localhost resolves to your ATACenter, you should be all set to start using the cmdlets. If not, you will want to run Set-ATACenterURL and specify the URL for your ATA Center. This can be found in the configuration.  
   
 ### No Internet Connectivity
-Download the zip file from technet (URL coming) and place the contained Azure-Security-Center folder in any approved modules path.
+Clone the module from this github and place the contained Azure-Security-Center folder in any approved module path.
 For more information on installing modules see: https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx
 
 # First steps
