@@ -1,3 +1,5 @@
+### **_NOTE! Downloading the module via zip file from github causes an encoding issue and the module will not show as signed. To avoid this issue install from the PS Gallery using PowerShell (Install-Module Advanced-Threat-Analytics) or download via git command line._**
+
 # About This Module
 Note! This module requires ATA 1.8.
 
@@ -5,7 +7,7 @@ The Advanced-Threat-Analytics PowerShell module was designed to make it easy for
 While this module is signed by Microsoft, it should be made very clear that it is not a formal part of the ATA product and there is no warranty of any kind or guaranteed support.
 
 # Installation
-  
+
 ## ATA Center vs. Management Server
 It is recommended to install the module either directly on the ATA Center or on a domain joined PC. The module uses the credentials of the signed in Windows user to authenticate to the ATA Center. This means that you will not be able to use the module with a user that cannot also log into the ATA Center.
 
