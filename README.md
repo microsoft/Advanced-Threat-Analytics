@@ -4,7 +4,7 @@
 - ATA Center Version 1.8+
 - Windows Management Framework 5.1+
   
-# About This Module
+## About This Module
 The Advanced-Threat-Analytics PowerShell module was designed to make it easy for customers to interface with the ATA Center through a simple set of cmdlets.
 While this module is signed by Microsoft, it should be made very clear that it is not a formal part of the ATA product and there is no warranty of any kind or guaranteed support.
 
@@ -30,6 +30,8 @@ For more information on installing modules see: https://msdn.microsoft.com/en-us
 ## Windows Server 2012R2
 
 ### Internet Connectivity
+Validate the server is on WMF 5.1+
+  
 Install the Package Manager MSI to enable Module and Package cmdlets on the server: https://www.microsoft.com/en-us/download/details.aspx?id=51451
 
 Run PowerShell as an administrator and execute the below command:  
@@ -38,6 +40,8 @@ Install-Module Advanced-Threat-Analytics  
 The module should install from the PowerShell gallery. If localhost resolves to your ATACenter, you should be all set to start using the cmdlets. If not, you will want to run Set-ATACenterURL and specify the URL for your ATA Center. This can be found in the configuration.  
   
 ### No Internet Connectivity
+Validate the server is on WMF 5.1+
+  
 Clone the module from this github and place the contained Azure-Security-Center folder in any approved module path.
 For more information on installing modules see: https://msdn.microsoft.com/en-us/library/dd878350(v=vs.85).aspx
 
